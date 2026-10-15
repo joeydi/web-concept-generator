@@ -1,0 +1,144 @@
+/* Meerkat Design System tokens. Fonts swapped to Google Fonts: Hanken Grotesk (sans) and JetBrains Mono (mono), the v1 handoff pairing. */
+:root, [data-theme="light"] {
+  --palette-blue: #0361f0;
+  --palette-blue-dark: #024ab8;
+  --palette-blue-wash: #e6f0ff;
+  --palette-blue-wash-strong: #ddebff;
+  --palette-green: #047857;
+  --palette-green-wash: #d1fae5;
+  --palette-amber: #a1530b;
+  --palette-amber-wash: #fef3c7;
+  --palette-red: #be123c;
+  --palette-red-wash: #ffe4e6;
+  --palette-purple: #7a3fa8;
+  --palette-purple-wash: #efe3fa;
+  --palette-pink: #b03a6b;
+  --palette-pink-wash: #fbdde9;
+  --palette-yellow: #ffd84d;
+  --palette-neutral-50: oklch(0.985 0.0025 260);
+  --palette-neutral-100: oklch(0.955 0.0074 260);
+  --palette-neutral-200: oklch(0.918 0.0131 260);
+  --palette-neutral-300: oklch(0.864 0.0209 260);
+  --palette-neutral-400: oklch(0.73 0.0369 260);
+  --palette-neutral-500: oklch(0.645 0.0446 260);
+  --palette-neutral-600: oklch(0.53 0.0411 260);
+  --palette-neutral-700: oklch(0.424 0.0259 260);
+  --palette-neutral-900: oklch(0.205 0.0051 260);
+  --color-background: var(--palette-neutral-50);
+  --color-surface: #ffffff;
+  --color-sunken: var(--palette-neutral-100);
+  --color-foreground: var(--palette-neutral-900);
+  --color-strong: var(--palette-neutral-700);
+  --color-meta: var(--palette-neutral-500);
+  --color-faint: var(--palette-neutral-400);
+  --color-border: var(--palette-neutral-200);
+  --color-border-hover: var(--palette-neutral-300);
+  --color-divider: var(--palette-neutral-100);
+  --color-brand: var(--palette-blue);
+  --color-brand-dark: var(--palette-blue-dark);
+  --color-brand-wash: var(--palette-blue-wash);
+  --color-brand-wash-strong: var(--palette-blue-wash-strong);
+  --color-score-good: var(--palette-green);
+  --color-score-good-wash: var(--palette-green-wash);
+  --color-score-mid: var(--palette-amber);
+  --color-score-mid-wash: var(--palette-amber-wash);
+  --color-score-bad: var(--palette-red);
+  --color-score-bad-wash: var(--palette-red-wash);
+  --color-wave-error: var(--palette-red);
+  --color-wave-contrast: var(--color-strong);
+  --color-wave-alert: var(--palette-amber);
+  --color-wave-feature: var(--palette-green);
+  --color-wave-structure: var(--palette-blue);
+  --color-wave-aria: var(--palette-purple);
+  --color-wave-aria-wash: var(--palette-purple-wash);
+  --color-wp-current: var(--palette-green);
+  --color-wp-current-wash: var(--palette-green-wash);
+  --color-wp-update: var(--palette-amber);
+  --color-wp-update-wash: var(--palette-amber-wash);
+  --color-wp-risk: var(--palette-red);
+  --color-wp-risk-wash: var(--palette-red-wash);
+  --color-wp-unknown: var(--palette-neutral-600);
+  --color-wp-unknown-wash: var(--color-sunken);
+  --color-avatar: var(--palette-yellow);
+  --color-notice: #5a5b52;
+  --color-notice-wash: var(--palette-amber-wash);
+  --color-alert: var(--palette-red);
+  --color-alert-wash: var(--palette-red-wash);
+  --color-tile-amber: var(--palette-amber);
+  --color-tile-amber-wash: var(--palette-amber-wash);
+  --color-tile-pink: var(--palette-pink);
+  --color-tile-pink-wash: var(--palette-pink-wash);
+  --color-site-1: #0361f0;
+  --color-site-2: #c0402a;
+  --color-site-3: #2f6b4f;
+  --color-site-4: #7a3fa8;
+  --color-site-5: #b07e00;
+  --color-site-6: #1f4e79;
+  --color-site-7: #b03a6b;
+  --color-site-8: #3a6f72;
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-foreground);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-foreground);
+  --color-primary: var(--color-foreground);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--color-sunken);
+  --color-secondary-foreground: var(--color-foreground);
+  --color-muted: var(--color-sunken);
+  --color-muted-foreground: var(--color-meta);
+  --color-accent: var(--color-sunken);
+  --color-accent-foreground: var(--color-foreground);
+  --color-destructive: var(--color-alert);
+  --color-destructive-foreground: #ffffff;
+  --color-input: var(--color-border);
+  --color-ring: var(--color-brand);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-popover: 0 14px 34px rgba(22, 23, 26, 0.14);
+  --shadow-card: none;
+}
+:root {
+  --space-1: 4px;
+  --space-2: 6px;
+  --space-3: 8px;
+  --space-4: 9px;
+  --space-5: 10px;
+  --space-6: 11px;
+  --space-7: 12px;
+  --space-8: 14px;
+  --space-9: 16px;
+  --space-10: 18px;
+  --space-11: 20px;
+  --space-12: 22px;
+  --space-13: 26px;
+  --space-14: 30px;
+  --space-15: 34px;
+  --space-16: 40px;
+  --space-17: 44px;
+  --page-padding-x: 40px;
+  --card-padding: 18px;
+  --grid-gap-cards: 16px;
+  --grid-gap-panels: 22px;
+  --grid-gap-scorecards: 14px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-round: 999px;
+  --font-sans: var(--font-hanken), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+.page-lg { font-family: var(--font-sans); font-size: 34px; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
+.score { font-family: var(--font-sans); font-size: 30px; font-weight: 700; }
+.page { font-family: var(--font-sans); font-size: 28px; font-weight: 700; line-height: 1.12; letter-spacing: -0.02em; }
+.title { font-family: var(--font-sans); font-size: 20px; font-weight: 700; }
+.cardtitle { font-family: var(--font-sans); font-size: 16px; font-weight: 700; }
+.panel { font-family: var(--font-sans); font-size: 15px; font-weight: 700; }
+.body-lg { font-family: var(--font-sans); font-size: 14.5px; font-weight: 400; }
+.body { font-family: var(--font-sans); font-size: 13.5px; font-weight: 400; }
+.note { font-family: var(--font-sans); font-size: 13px; font-weight: 400; }
+.display { font-family: var(--font-mono); font-size: 54px; font-weight: 500; line-height: 1; letter-spacing: -0.04em; }
+.readout { font-family: var(--font-mono); font-size: 28px; font-weight: 500; line-height: 1; letter-spacing: -0.03em; }
+.chip { font-family: var(--font-mono); font-size: 12.5px; font-weight: 600; }
+.colhead { font-family: var(--font-mono); font-size: 11.5px; font-weight: 500; letter-spacing: 0.04em; }
+.hint { font-family: var(--font-mono); font-size: 11px; font-weight: 500; }
+.label { font-family: var(--font-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.08em; }
