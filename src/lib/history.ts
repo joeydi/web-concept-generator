@@ -1,4 +1,4 @@
-import type { Content, Style } from "./types";
+import { StyleSchema, type Content, type Style } from "./types";
 
 export interface HistoryEntry { domain: string; ts: number; content: Content }
 
@@ -21,7 +21,15 @@ export function saveHistoryEntry(content: Content): HistoryEntry[] {
   write(HKEY, next);
   return next;
 }
-export const loadCustomStyles = (): Style[] => read<Style[]>(SKEY, []);
+/** Validate stored styles; legacy layouts (a preset name string) are migrated, unusable entries dropped. */
+export function parseStoredStyles(raw: unknown): Style[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.flatMap((r) => {
+    const parsed = StyleSchema.safeParse(r);
+    return parsed.success ? [{ ...parsed.data, custom: true }] : [];
+  });
+}
+export const loadCustomStyles = (): Style[] => parseStoredStyles(read<unknown>(SKEY, []));
 export function saveCustomStyles(styles: Style[]) { write(SKEY, styles.filter((s) => s.custom).slice(0, 12)); }
 
 export function relativeTime(ts: number): string {

@@ -34,12 +34,12 @@ export function StyleStrip({
           <button
             key={s.id} type="button" role="radio" aria-checked={s.id === selectedId}
             className={`style-card${s.id === newId ? " is-new" : ""}`} style={cardVars(s)}
-            aria-label={`${s.name}, ${s.vibe.join(", ")}, ${s.layout} layout`}
+            aria-label={`${s.name}, ${s.vibe.join(", ")}, ${s.layout.name} layout`}
             onClick={() => phase !== "extracting" && onSelect(s)}
           >
             <div className="sw"><i className="s1" /><i className="s2" /><i className="s3" /></div>
             <div className="aa"><b>Aa</b><span>Aa</span></div>
-            <footer><span className="nm">{s.name}</span><span className="chip">{s.layout}</span></footer>
+            <footer><span className="nm">{s.name}</span><span className="chip">{s.layout.name}</span></footer>
           </button>
         )) : Array.from({ length: 6 }, (_, i) => <div key={i} className="style-skel" />)}
       </div>

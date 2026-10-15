@@ -1,6 +1,9 @@
 import { brightness, ensureContrast, hexToRgb, mix, normalizePalette, saturation, type RGB } from "./color";
 import type { Traits } from "./imageClient";
-import type { Layout, Style } from "./types";
+import { LAYOUT_PRESETS } from "./layout";
+import type { Style } from "./types";
+
+type Archetype = keyof typeof LAYOUT_PRESETS;
 
 /** Offline fallback used when the vision call fails: derives a plausible style from pixel statistics. */
 export function heuristicStyle(hints: string[], t: Traits, name: string): Style {
@@ -16,7 +19,7 @@ export function heuristicStyle(hints: string[], t: Traits, name: string): Style 
   const hex = (c: RGB) => "#" + c.map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
   const palette = normalizePalette({ bg: hex(bg), ink: hex(ink), accent: hex(accent) });
 
-  let layout: Layout;
+  let layout: Archetype;
   if (t.sym > 0.9) layout = "symmetrical";
   else if (t.stdL > 0.27 && t.meanS > 0.42) layout = "avant-garde";
   else if (t.edge < 0.035 && t.meanS < 0.35) layout = "clean";
@@ -24,7 +27,7 @@ export function heuristicStyle(hints: string[], t: Traits, name: string): Style 
   else if (t.edge > 0.1) layout = "overlapping";
   else layout = "asymmetrical";
 
-  const fonts: Record<Layout, Style["fonts"]> = {
+  const fonts: Record<string, Style["fonts"]> = {
     symmetrical: { display: "playfair", body: "source-serif" }, asymmetrical: { display: "fraunces", body: "figtree" },
     clean: { display: "jakarta", body: "jakarta" }, overlapping: { display: "dm-serif", body: "dm-sans" },
     traditional: { display: "playfair", body: "source-serif" }, "avant-garde": { display: "space-grotesk", body: "space-grotesk" },
@@ -33,9 +36,9 @@ export function heuristicStyle(hints: string[], t: Traits, name: string): Style 
     id: "x" + Date.now().toString(36),
     name: name.charAt(0).toUpperCase() + name.slice(1),
     vibe: [dark ? "Moody" : t.meanL > 0.7 ? "Airy" : "Grounded", t.meanS > 0.5 ? "Vivid" : t.warmth > 0.05 ? "Warm" : t.warmth < -0.05 ? "Cool" : "Muted"],
-    layout, palette, fonts: dark && layout !== "avant-garde" ? { display: "bebas", body: "inter" } : fonts[layout],
+    layout: LAYOUT_PRESETS[layout], palette, fonts: dark && layout !== "avant-garde" ? { display: "bebas", body: "inter" } : fonts[layout],
     space: t.edge < 0.05 ? 1.3 : t.edge > 0.1 ? 0.88 : 1,
-    radius: { clean: 14, traditional: 2, "avant-garde": 0, overlapping: 20, symmetrical: 6, asymmetrical: 10 }[layout],
+    radius: ({ clean: 14, traditional: 2, "avant-garde": 0, overlapping: 20, symmetrical: 6, asymmetrical: 10 } as Record<string, number>)[layout],
     custom: true,
   };
 }

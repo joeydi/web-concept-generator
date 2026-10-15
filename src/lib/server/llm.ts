@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { z } from "zod";
 import { BODY_KEYS, DISPLAY_KEYS, FONTS } from "../fonts";
-import { LAYOUTS } from "../types";
+import { LAYOUT_PRESETS, LayoutSpecSchema } from "../layout";
 import type { PageData } from "./crawl";
 
 export const MODEL = process.env.ANTHROPIC_MODEL || "claude-sonnet-5-5";
@@ -112,8 +112,9 @@ export const StyleExtractSchema = z.object({
     radius: z.number().describe("Corner radius in px: 0 sharp, 6 subtle, 12 soft, 22 pill-like"),
   }),
   layout: z.object({
-    layout: z.enum(LAYOUTS),
-    reason: z.string().describe("One short sentence"),
+    name: z.string().describe("A 1-3 word name for this composition, e.g. 'Offset editorial' or 'Stacked minimal'"),
+    concept: z.string().describe("Write this FIRST: one sentence naming the image's strongest compositional trait and the bold stance the website layout takes in response (e.g. 'Hard diagonal energy, so the page tilts and crops'). The spec below must follow from it"),
+    spec: LayoutSpecSchema,
   }),
   aesthetic: z.object({
     name: z.string().describe("A 1-2 word evocative style name"),
@@ -127,12 +128,24 @@ export const STYLE_KEY_ORDER = ["colors", "typography", "spacing", "layout", "ae
 
 const FONT_GUIDE = FONTS.map((f) => `- ${f.key}: ${f.label} (${f.feel}) [${f.roles.join("/")}]`).join("\n");
 
-const LAYOUT_GUIDE = `- symmetrical: centred, mirrored, formal balance
-- asymmetrical: offset columns, dynamic imbalance, editorial
-- clean: single column, lots of whitespace, minimal
-- overlapping: layered elements, collage, elements breaking containers
-- traditional: classic masthead, boxed content, framed images, conventional hierarchy
-- avant-garde: experimental, oversized type, broken grid, rotated/cropped elements`;
+const LAYOUT_GUIDE = `Describe the page composition with the layout spec. This is a design decision, not a safe default: commit to the image's character and push it.
+
+Process: (1) find the image's single strongest compositional trait: symmetry, tension, density, scale contrast, overlap, geometry, calm, rawness, formality; (2) state a bold stance in "concept"; (3) set EVERY spec field to serve that stance.
+
+Cue -> settings:
+- mirrored, centred, formal balance -> align center, centered nav, stacked hero, equal cards, framed or inset image, below byline
+- off-centre mass, hanging type, tension -> split hero with a skewed heroSplit (0.3-0.36 or 0.55-0.6), asymmetric cards, stagger 0.8-1, bleed image
+- empty space, hairlines, restraint -> ruled nav, small headlineScale (0.7-0.9), inset image with low imageHeight (0.25-0.35) and imageWidth ~0.6, list cards, bare chrome, plain banner, stacked details
+- layers, collage, things covering each other -> overlay hero, headlineOverlap 0.7-1, imageLift and imageOffset high, cardOverlap 0.6-1, filled cards, stagger
+- classic, ordered, ornate -> masthead nav, framed image, outlined cards, drop cap, rail byline, centered banner
+- aggressive geometry, extreme scale, rotation, crop -> vertical nav, headlineScale 1.8-2.2, diagonal image, tilt 2-3, oversize banner, title-over-image, accent-tilted blurb
+
+Rules:
+- Use the full numeric ranges. Values hugging the middle (headlineScale 1.1-1.3, imageHeight 0.5-0.6, stagger 0.3) mean the image was not read. Put at least three numbers in the outer quarter of their range.
+- At least eight fields must differ from the plain default (inline nav, left, split, plain blurb, bleed image, asymmetric bare cards, overlay banner, image-left, side byline).
+- Do not reach for filled cards, inline nav, a below byline or stacked details by habit; choose each one because the image calls for it.
+- Reference archetypes below show the range, they are not templates; do not copy one, blend or invert them.
+${Object.values(LAYOUT_PRESETS).map((l) => `${l.name}: ${JSON.stringify(l.spec)}`).join("\n")}`;
 
 /**
  * Streams a vision analysis. `onKey` fires as each top-level field begins streaming so the UI can

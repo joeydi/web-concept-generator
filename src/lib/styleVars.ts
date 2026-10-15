@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { cssFamily, fontByKey } from "./fonts";
+import { layoutAttrs } from "./layout";
 import type { Style } from "./types";
 
 type Vars = CSSProperties & Record<`--${string}`, string | number>;
@@ -15,8 +16,12 @@ export function boardVars(s: Style): Vars {
     "--f-display": cssFamily(d), "--f-body": cssFamily(b),
     "--dw": d.weight, "--dcase": d.dcase, "--dtrack": d.dtrack,
     "--space": s.space, "--radius": `${s.radius}px`,
+    ...layoutAttrs(s.layout.spec).vars,
   };
 }
+
+/** data-* attributes describing the layout spec; spread onto the board element. */
+export const boardAttrs = (s: Style) => layoutAttrs(s.layout.spec).attrs;
 
 /** Variables for a style card in the strip. */
 export function cardVars(s: Style): Vars {

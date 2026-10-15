@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { BODY_KEYS, DISPLAY_KEYS } from "./fonts";
-
-export const LAYOUTS = ["symmetrical", "asymmetrical", "clean", "overlapping", "traditional", "avant-garde"] as const;
-export type Layout = (typeof LAYOUTS)[number];
+import { LayoutSchema, migrateLayout } from "./layout";
 
 export const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/);
 
@@ -15,7 +13,8 @@ export const StyleSchema = z.object({
   id: z.string(),
   name: z.string(),
   vibe: z.tuple([z.string(), z.string()]),
-  layout: z.enum(LAYOUTS),
+  // legacy stored styles used a preset name string; migrate those into {name, spec}
+  layout: z.preprocess(migrateLayout, LayoutSchema),
   palette: PaletteSchema,
   fonts: z.object({ display: z.enum(DISPLAY_KEYS), body: z.enum(BODY_KEYS) }),
   space: z.number(),

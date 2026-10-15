@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { boardVars } from "@/lib/styleVars";
+import { boardAttrs, boardVars } from "@/lib/styleVars";
 import type { Content, Style } from "@/lib/types";
 import { Details } from "./pages/Details";
 import { Home } from "./pages/Home";
@@ -29,7 +29,7 @@ function ConceptCard({ cls, label, content, children }: { cls: string; label: st
 export function Board({ content, style }: { content: Content | null; style: Style | null }) {
   const live = content && style;
   return (
-    <div className={`board${live ? "" : " is-skeleton"}`} data-layout={style?.layout} style={style ? boardVars(style) : undefined}>
+    <div className={`board${live ? "" : " is-skeleton"}`} {...(style ? boardAttrs(style) : {})} style={style ? boardVars(style) : undefined}>
       <ConceptCard cls="main" label="Homepage" content={content}>{content && <Home c={content} />}</ConceptCard>
       <ConceptCard cls="side" label="Landing page" content={content}>{content && <Services c={content} />}</ConceptCard>
       <ConceptCard cls="side" label="Details page" content={content}>{content && <Details c={content} />}</ConceptCard>

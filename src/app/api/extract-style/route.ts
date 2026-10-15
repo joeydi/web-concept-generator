@@ -1,4 +1,5 @@
 import { normalizePalette } from "@/lib/color";
+import { normalizeLayout } from "@/lib/layout";
 import { BODY_KEYS, DISPLAY_KEYS } from "@/lib/fonts";
 import { extractStyleFromImage, STYLE_KEY_ORDER } from "@/lib/server/llm";
 import { rateLimit } from "@/lib/server/ratelimit";
@@ -44,7 +45,7 @@ export async function POST(req: Request) {
       id: "x" + Date.now().toString(36),
       name: titleCase(raw.aesthetic.name) || "Image style",
       vibe: [titleCase(raw.aesthetic.vibe1), titleCase(raw.aesthetic.vibe2)],
-      layout: raw.layout.layout,
+      layout: { name: titleCase(raw.layout.name) || "Custom", spec: normalizeLayout(raw.layout.spec) },
       palette,
       fonts: {
         display: DISPLAY_KEYS.includes(raw.typography.display) ? raw.typography.display : DISPLAY_KEYS[0],

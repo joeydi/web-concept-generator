@@ -35,11 +35,12 @@ describe("presets", () => {
 });
 
 describe("schemas", () => {
-  it("reject bad hex, unknown fonts and layouts", () => {
+  it("reject bad hex and unknown fonts, and migrate unknown layout names", () => {
     const ok = PRESETS[0];
     expect(StyleSchema.safeParse({ ...ok, palette: { ...ok.palette, bg: "red" } }).success).toBe(false);
     expect(StyleSchema.safeParse({ ...ok, fonts: { display: "comic-sans", body: "inter" } }).success).toBe(false);
-    expect(StyleSchema.safeParse({ ...ok, layout: "wobbly" }).success).toBe(false);
+    // an unrecognised legacy layout name is migrated to the default archetype rather than rejected
+    expect(StyleSchema.parse({ ...ok, layout: "wobbly" }).layout.name).toBe("Asymmetrical");
   });
   it("content schema accepts null images", () => {
     expect(ContentSchema.safeParse({
