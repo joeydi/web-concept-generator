@@ -4,10 +4,10 @@ import { cardVars } from "@/lib/styleVars";
 import type { Style } from "@/lib/types";
 
 export function StyleStrip({
-  styles, selectedId, ready, phase, dragging, newId, onSelect, onPickFile,
+  styles, selectedId, ready, phase, dragging, newId, onSelect, onRemove, onPickFile,
 }: {
   styles: Style[]; selectedId: string | null; ready: boolean; phase: string; dragging: boolean; newId: string | null;
-  onSelect: (s: Style) => void; onPickFile: (f: File) => void;
+  onSelect: (s: Style) => void; onRemove: (s: Style) => void; onPickFile: (f: File) => void;
 }) {
   const file = useRef<HTMLInputElement>(null);
   const strip = useRef<HTMLDivElement>(null);
@@ -31,8 +31,9 @@ export function StyleStrip({
       </button>
       <div className="strip" ref={strip} role="radiogroup" aria-label="Style" onKeyDown={onKey}>
         {ready ? styles.map((s) => (
+          <div key={s.id} className="style-item">
           <button
-            key={s.id} type="button" role="radio" aria-checked={s.id === selectedId}
+            type="button" role="radio" aria-checked={s.id === selectedId}
             className={`style-card${s.id === newId ? " is-new" : ""}`} style={cardVars(s)}
             aria-label={`${s.name}, ${s.vibe.join(", ")}, ${s.layout.name} layout`}
             onClick={() => phase !== "extracting" && onSelect(s)}
@@ -41,6 +42,12 @@ export function StyleStrip({
             <div className="aa"><b>Aa</b><span>Aa</span></div>
             <footer><span className="nm">{s.name}</span><span className="chip">{s.layout.name}</span></footer>
           </button>
+          {s.custom && (
+            <button type="button" className="style-remove" aria-label={`Remove ${s.name}`} onClick={() => onRemove(s)}>
+              <svg className="lucide" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+            </button>
+          )}
+          </div>
         )) : Array.from({ length: 6 }, (_, i) => <div key={i} className="style-skel" />)}
       </div>
       <input ref={file} type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) onPickFile(f); e.target.value = ""; }} />

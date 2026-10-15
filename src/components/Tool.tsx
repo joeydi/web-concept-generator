@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { heuristicStyle } from "@/lib/heuristicStyle";
-import { loadCustomStyles, loadHistory, saveCustomStyles, saveHistoryEntry, type HistoryEntry } from "@/lib/history";
+import { loadCustomStyles, loadHistory, removeHistoryEntry, saveCustomStyles, saveHistoryEntry, type HistoryEntry } from "@/lib/history";
 import { prepareImage } from "@/lib/imageClient";
 import { PRESETS } from "@/lib/presets";
 import { streamPost } from "@/lib/sse";
@@ -108,6 +108,13 @@ export function Tool() {
     document.querySelector(".strip")?.scrollTo({ left: 0 });
   }, []);
 
+  const removeStyle = useCallback((s: Style) => {
+    withTransition(() => {
+      setCustom((prev) => { const next = prev.filter((c) => c.id !== s.id); saveCustomStyles(next); return next; });
+      setStyleId((id) => (id === s.id ? PRESETS[0].id : id));
+    });
+  }, []);
+
   const extract = useCallback(async (file: File) => {
     if (phaseRef.current !== "loaded" || !file.type.startsWith("image/")) return;
     setPhase("extracting");
@@ -145,6 +152,32 @@ export function Tool() {
     addStyle(style);
   }, [addStyle, flash]);
 
+  /* ───── arrow keys: up/down cycle sites, left/right cycle styles ───── */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || phase === "loading" || phase === "extracting") return;
+      const t = e.target as HTMLElement;
+      const vertical = e.key === "ArrowUp" || e.key === "ArrowDown";
+      const horizontal = e.key === "ArrowLeft" || e.key === "ArrowRight";
+      if (!vertical && !horizontal) return;
+      if (horizontal && (t.closest("input, textarea, select") || t.closest(".strip"))) return;
+      const dir = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : -1;
+      if (vertical) {
+        if (!history.length) return;
+        const i = history.findIndex((h) => h.domain === content?.domain);
+        const next = history[i < 0 ? (dir > 0 ? 0 : history.length - 1) : (i + dir + history.length) % history.length];
+        e.preventDefault();
+        pickHistory(next);
+      } else if (content) {
+        const i = styles.findIndex((s) => s.id === styleId);
+        e.preventDefault();
+        withTransition(() => setStyleId(styles[(i + dir + styles.length) % styles.length].id));
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  });
+
   /* ───── global drag and drop ───── */
   useEffect(() => {
     let depth = 0;
@@ -174,8 +207,8 @@ export function Tool() {
   return (
     <div className="app" data-phase={phase}>
       <SearchBar
-        value={input} onChange={(v) => { setInput(v); setInvalid(false); }} onSubmit={generate} onPickHistory={pickHistory}
-        history={history} panel={panel} setPanel={setPanel} steps={steps} hint={hint} disabled={phase === "loading"} invalid={invalid}
+        value={input} onChange={(v) => { setInput(v); setInvalid(false); }} onSubmit={generate} onPickHistory={pickHistory} onRemoveHistory={(h) => setHistory(removeHistoryEntry(h.domain))}
+        history={history} activeDomain={content?.domain ?? null} panel={panel} setPanel={setPanel} steps={steps} hint={hint} disabled={phase === "loading"} invalid={invalid}
       />
       <section className="board-wrap" aria-label="Concept board">
         <Board content={content} style={content ? style : null} />
@@ -185,7 +218,7 @@ export function Tool() {
       </section>
       <StyleStrip
         styles={styles} selectedId={styleId} ready={!!content} phase={phase} dragging={dragging} newId={newId}
-        onSelect={(s) => withTransition(() => setStyleId(s.id))} onPickFile={(f) => void extract(f)}
+        onSelect={(s) => withTransition(() => setStyleId(s.id))} onRemove={removeStyle} onPickFile={(f) => void extract(f)}
       />
     </div>
   );

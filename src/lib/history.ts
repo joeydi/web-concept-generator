@@ -21,6 +21,11 @@ export function saveHistoryEntry(content: Content): HistoryEntry[] {
   write(HKEY, next);
   return next;
 }
+export function removeHistoryEntry(domain: string): HistoryEntry[] {
+  const next = loadHistory().filter((h) => h.domain !== domain);
+  write(HKEY, next);
+  return next;
+}
 /** Validate stored styles; legacy layouts (a preset name string) are migrated, unusable entries dropped. */
 export function parseStoredStyles(raw: unknown): Style[] {
   if (!Array.isArray(raw)) return [];
